@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:flutter_tools/src/desktop/desktop_simulator.dart';
 import 'package:meta/meta.dart';
 
 import '../android/android_device.dart';
@@ -594,6 +595,7 @@ class DeviceDomain extends Domain {
       addDeviceDiscoverer(LinuxDevices());
       addDeviceDiscoverer(WindowsDevices());
     }
+    addDeviceDiscoverer(FlutterDesktopDevices());
   }
 
   void addDeviceDiscoverer(PollingDeviceDiscovery discoverer) {

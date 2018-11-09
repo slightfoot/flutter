@@ -5,6 +5,8 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter_tools/src/desktop/desktop_simulator.dart';
+
 import 'android/android_device.dart';
 import 'application_package.dart';
 import 'base/context.dart';
@@ -38,6 +40,7 @@ class DeviceManager {
     MacOSDevices(),
     LinuxDevices(),
     WindowsDevices(),
+    FlutterDesktopDevices(),
   ]);
 
   String _specifiedDeviceId;

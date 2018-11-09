@@ -5,6 +5,8 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter_tools/src/desktop/desktop_simulator.dart';
+
 import 'android/android_emulator.dart';
 import 'android/android_sdk.dart';
 import 'base/context.dart';
@@ -23,6 +25,7 @@ class EmulatorManager {
     // Register the known discoverers.
     _emulatorDiscoverers.add(AndroidEmulators());
     _emulatorDiscoverers.add(IOSEmulators());
+ //   _emulatorDiscoverers.add(DesktopEmulators());
   }
 
   final List<EmulatorDiscovery> _emulatorDiscoverers = <EmulatorDiscovery>[];
