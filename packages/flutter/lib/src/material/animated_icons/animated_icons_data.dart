@@ -5,7 +5,7 @@
 // This file serves as the interface between the public and private APIs for
 // animated icons.
 // The AnimatedIcons class is public and is used to specify available icons,
-// while the _AnimatedIconData interface which used to deliver the icon data is
+// while the AnimatedIconData interface which used to deliver the icon data is
 // kept private.
 
 part of material_animated_icons;
@@ -65,10 +65,13 @@ abstract class AnimatedIcons {
 ///
 /// See also:
 ///  * [AnimatedIcons], a class that contains constants that implement this interface.
-abstract class AnimatedIconData {
+class AnimatedIconData {
   /// Abstract const constructor. This constructor enables subclasses to provide
   /// const constructors so that they can be used in const expressions.
-  const AnimatedIconData();
+  const AnimatedIconData(this.size, this.paths, {this.matchTextDirection = false});
+
+  final Size size;
+  final List<PathFrames> paths;
 
   /// Whether this icon should be mirrored horizontally when text direction is
   /// right-to-left.
@@ -77,15 +80,5 @@ abstract class AnimatedIconData {
   ///  * [TextDirection], which discusses concerns regarding reading direction
   ///    in Flutter.
   ///  * [Directionality], a widget which determines the ambient directionality.
-  bool get matchTextDirection;
-}
-
-class _AnimatedIconData extends AnimatedIconData {
-  const _AnimatedIconData(this.size, this.paths, {this.matchTextDirection = false});
-
-  final Size size;
-  final List<_PathFrames> paths;
-
-  @override
-  final bool matchTextDirection;
+  bool matchTextDirection;
 }

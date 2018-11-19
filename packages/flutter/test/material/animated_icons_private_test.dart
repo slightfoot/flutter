@@ -327,7 +327,7 @@ void main () {
       );
 
       final _AnimatedIconPainter painter2 = _AnimatedIconPainter(
-        paths: const <_PathFrames> [],
+        paths: const <PathFrames> [],
         progress: const AlwaysStoppedAnimation<double>(0.0),
         color: const Color(0xFF0000FF),
         scale: 1.0,
@@ -341,62 +341,62 @@ void main () {
   });
 }
 
-const _AnimatedIconData movingBar = _AnimatedIconData(
+const AnimatedIconData movingBar = AnimatedIconData(
   Size(48.0, 48.0),
-  <_PathFrames> [
-    _PathFrames(
+  <PathFrames> [
+    PathFrames(
       opacities: <double> [1.0, 0.2],
-      commands: <_PathCommand> [
-        _PathMoveTo(
+      commands: <PathCommand> [
+        PathMoveTo(
           <Offset> [
             Offset(0.0, 0.0),
             Offset(0.0, 38.0),
           ],
         ),
-        _PathLineTo(
+        PathLineTo(
           <Offset> [
             Offset(48.0, 0.0),
             Offset(48.0, 38.0),
           ],
         ),
-        _PathLineTo(
+        PathLineTo(
           <Offset> [
             Offset(48.0, 10.0),
             Offset(48.0, 48.0),
           ],
         ),
-        _PathLineTo(
+        PathLineTo(
           <Offset> [
             Offset(0.0, 10.0),
             Offset(0.0, 48.0),
           ],
         ),
-        _PathLineTo(
+        PathLineTo(
           <Offset> [
             Offset(0.0, 0.0),
             Offset(0.0, 38.0),
           ],
         ),
-        _PathClose(),
+        PathClose(),
       ],
     ),
   ],
 );
 
-const _AnimatedIconData bow = _AnimatedIconData(
+const AnimatedIconData bow = AnimatedIconData(
   Size(48.0, 48.0),
-  <_PathFrames> [
-    _PathFrames(
+  <PathFrames> [
+    PathFrames(
       opacities: <double> [1.0, 1.0],
-      commands: <_PathCommand> [
-        _PathMoveTo(
+      commands: <PathCommand> [
+        PathMoveTo(
           <Offset> [
             Offset(0.0, 24.0),
             Offset(0.0, 24.0),
             Offset(0.0, 24.0),
           ],
         ),
-        _PathCubicTo(
+        PathCubicTo(
           <Offset> [
             Offset(16.0, 24.0),
             Offset(16.0, 10.0),
@@ -413,14 +413,14 @@ const _AnimatedIconData bow = _AnimatedIconData(
             Offset(48.0, 24.0),
           ],
         ),
-        _PathLineTo(
+        PathLineTo(
           <Offset> [
             Offset(0.0, 24.0),
             Offset(0.0, 24.0),
             Offset(0.0, 24.0),
           ],
         ),
-        _PathClose(),
+        PathClose(),
       ],
     ),
   ],

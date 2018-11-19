@@ -84,7 +84,7 @@ void main(List<String> args) {
     generatedSb.write('part of ${argResults['part-of']};\n');
 
   final Animation animation = Animation.fromFrameData(frames);
-  generatedSb.write(animation.toDart('_AnimatedIconData', argResults['asset-name']));
+  generatedSb.write(animation.toDart('AnimatedIconData', argResults['asset-name']));
 
   final File outFile = File(argResults['output']);
   outFile.writeAsStringSync(generatedSb.toString());

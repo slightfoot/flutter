@@ -102,7 +102,6 @@ class AnimatedIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _AnimatedIconData iconData = icon;
     final IconThemeData iconTheme = IconTheme.of(context);
     final double iconSize = size ?? iconTheme.size;
     final TextDirection textDirection = this.textDirection ?? Directionality.of(context);
@@ -115,11 +114,11 @@ class AnimatedIcon extends StatelessWidget {
       child: CustomPaint(
         size: Size(iconSize, iconSize),
         painter: _AnimatedIconPainter(
-          paths: iconData.paths,
+          paths: icon.paths,
           progress: progress,
           color: iconColor,
-          scale: iconSize / iconData.size.width,
-          shouldMirror: textDirection == TextDirection.rtl && iconData.matchTextDirection,
+          scale: iconSize / icon.size.width,
+          shouldMirror: textDirection == TextDirection.rtl && icon.matchTextDirection,
           uiPathFactory: _pathFactory,
         ),
       ),
@@ -141,7 +140,7 @@ class _AnimatedIconPainter extends CustomPainter {
 
   // This list is assumed to be immutable, changes to the contents of the list
   // will not trigger a redraw as shouldRepaint will keep returning false.
-  final List<_PathFrames> paths;
+  final List<PathFrames> paths;
   final Animation<double> progress;
   final Color color;
   final double scale;
@@ -160,7 +159,7 @@ class _AnimatedIconPainter extends CustomPainter {
     }
 
     final double clampedProgress = progress.value.clamp(0.0, 1.0);
-    for (_PathFrames path in paths)
+    for (PathFrames path in paths)
       path.paint(canvas, color, uiPathFactory, clampedProgress);
   }
 
@@ -186,13 +185,13 @@ class _AnimatedIconPainter extends CustomPainter {
   SemanticsBuilderCallback get semanticsBuilder => null;
 }
 
-class _PathFrames {
-  const _PathFrames({
+class PathFrames {
+  const PathFrames({
     @required this.commands,
     @required this.opacities
   });
 
-  final List<_PathCommand> commands;
+  final List<PathCommand> commands;
   final List<double> opacities;
 
   void paint(ui.Canvas canvas, Color color, _UiPathFactory uiPathFactory, double progress) {
@@ -201,7 +200,7 @@ class _PathFrames {
       ..style = PaintingStyle.fill
       ..color = color.withOpacity(color.opacity * opacity);
     final ui.Path path = uiPathFactory();
-    for (_PathCommand command in commands)
+    for (PathCommand command in commands)
       command.apply(path, progress);
     canvas.drawPath(path, paint);
   }
@@ -209,20 +208,20 @@ class _PathFrames {
 
 /// Paths are being built by a set of commands e.g moveTo, lineTo, etc...
 ///
-/// _PathCommand instances represents such a command, and can apply it to
+/// PathCommand instances represents such a command, and can apply it to
 /// a given Path.
-abstract class _PathCommand {
-  const _PathCommand();
+abstract class PathCommand {
+  const PathCommand();
 
   /// Applies the path command to [path].
   ///
-  /// For example if the object is a [_PathMoveTo] command it will invoke
+  /// For example if the object is a [PathMoveTo] command it will invoke
   /// [Path.moveTo] on [path].
   void apply(ui.Path path, double progress);
 }
 
-class _PathMoveTo extends _PathCommand {
-  const _PathMoveTo(this.points);
+class PathMoveTo extends PathCommand {
+  const PathMoveTo(this.points);
 
   final List<Offset> points;
 
@@ -233,8 +232,8 @@ class _PathMoveTo extends _PathCommand {
   }
 }
 
-class _PathCubicTo extends _PathCommand {
-  const _PathCubicTo(this.controlPoints1, this.controlPoints2, this.targetPoints);
+class PathCubicTo extends PathCommand {
+  const PathCubicTo(this.controlPoints1, this.controlPoints2, this.targetPoints);
 
   final List<Offset> controlPoints2;
   final List<Offset> controlPoints1;
@@ -253,9 +252,8 @@ class _PathCubicTo extends _PathCommand {
   }
 }
 
-// ignore: unused_element
-class _PathLineTo extends _PathCommand {
-  const _PathLineTo(this.points);
+class PathLineTo extends PathCommand {
+  const PathLineTo(this.points);
 
   final List<Offset> points;
 
@@ -266,8 +264,8 @@ class _PathLineTo extends _PathCommand {
   }
 }
 
-class _PathClose extends _PathCommand {
-  const _PathClose();
+class PathClose extends PathCommand {
+  const PathClose();
 
   @override
   void apply(Path path, double progress) {

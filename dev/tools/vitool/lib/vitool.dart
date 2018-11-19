@@ -58,7 +58,7 @@ class Animation {
     final StringBuffer sb = StringBuffer();
     sb.write('const $className $varName = const $className(\n');
     sb.write('${kIndent}const Size(${size.x}, ${size.y}),\n');
-    sb.write('${kIndent}const <_PathFrames>[\n');
+    sb.write('${kIndent}const <PathFrames>[\n');
     for (PathAnimation path in paths)
       sb.write(path.toDart());
     sb.write('$kIndent],\n');
@@ -87,8 +87,8 @@ class PathAnimation {
         final String currentCommandType = frame.paths[pathIdx].commands[commandIdx].type;
         if (commandType != currentCommandType)
           throw Exception(
-              'Paths must be built from the same commands in all frames'
-              'command $commandIdx at frame 0 was of type \'$commandType\''
+              'Paths must be built from the same commands in all frames\n'
+              'command $commandIdx at frame 0 was of type \'$commandType\'\n'
               'command $commandIdx at frame $i was of type \'$currentCommandType\''
           );
         for (int j = 0; j < numPointsInCommand; j += 1)
@@ -115,12 +115,12 @@ class PathAnimation {
 
   String toDart() {
     final StringBuffer sb = StringBuffer();
-    sb.write('${kIndent * 2}const _PathFrames(\n');
+    sb.write('${kIndent * 2}const PathFrames(\n');
     sb.write('${kIndent * 3}opacities: const <double>[\n');
     for (double opacity in opacities)
       sb.write('${kIndent * 4}$opacity,\n');
     sb.write('${kIndent * 3}],\n');
-    sb.write('${kIndent * 3}commands: const <_PathCommand>[\n');
+    sb.write('${kIndent * 3}commands: const <PathCommand>[\n');
     for (PathCommandAnimation command in commands)
       sb.write(command.toDart());
     sb.write('${kIndent * 3}],\n');
@@ -150,16 +150,16 @@ class PathCommandAnimation {
     String dartCommandClass;
     switch (type) {
       case 'M':
-        dartCommandClass = '_PathMoveTo';
+        dartCommandClass = 'PathMoveTo';
         break;
       case 'C':
-        dartCommandClass = '_PathCubicTo';
+        dartCommandClass = 'PathCubicTo';
         break;
       case 'L':
-        dartCommandClass = '_PathLineTo';
+        dartCommandClass = 'PathLineTo';
         break;
       case 'Z':
-        dartCommandClass = '_PathClose';
+        dartCommandClass = 'PathClose';
         break;
       default:
         throw Exception('unsupported path command: $type');
