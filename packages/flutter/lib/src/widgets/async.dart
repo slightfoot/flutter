@@ -76,7 +76,7 @@ abstract class StreamBuilderBase<T, S> extends StatefulWidget {
   /// Returns an updated version of the [current] summary following an error.
   ///
   /// The default implementation returns [current] as is.
-  S afterError(S current, Object error) => current;
+  S afterError(S current, Object error, StackTrace stackTrace) => current;
 
   /// Returns an updated version of the [current] summary following stream
   /// termination.
@@ -136,9 +136,9 @@ class _StreamBuilderBaseState<T, S> extends State<StreamBuilderBase<T, S>> {
         setState(() {
           _summary = widget.afterData(_summary, data);
         });
-      }, onError: (Object error) {
+      }, onError: (Object error, StackTrace stackTrace) {
         setState(() {
-          _summary = widget.afterError(_summary, error);
+          _summary = widget.afterError(_summary, error, stackTrace);
         });
       }, onDone: () {
         setState(() {
@@ -195,18 +195,18 @@ enum ConnectionState {
 class AsyncSnapshot<T> {
   /// Creates an [AsyncSnapshot] with the specified [connectionState],
   /// and optionally either [data] or [error] (but not both).
-  const AsyncSnapshot._(this.connectionState, this.data, this.error)
+  const AsyncSnapshot._(this.connectionState, this.data, this.error, this.stackTrace)
     : assert(connectionState != null),
       assert(!(data != null && error != null));
 
   /// Creates an [AsyncSnapshot] in [ConnectionState.none] with null data and error.
-  const AsyncSnapshot.nothing() : this._(ConnectionState.none, null, null);
+  const AsyncSnapshot.nothing() : this._(ConnectionState.none, null, null, null);
 
   /// Creates an [AsyncSnapshot] in the specified [state] and with the specified [data].
-  const AsyncSnapshot.withData(ConnectionState state, T data) : this._(state, data, null);
+  const AsyncSnapshot.withData(ConnectionState state, T data) : this._(state, data, null, null);
 
   /// Creates an [AsyncSnapshot] in the specified [state] and with the specified [error].
-  const AsyncSnapshot.withError(ConnectionState state, Object error) : this._(state, null, error);
+  const AsyncSnapshot.withError(ConnectionState state, Object error, StackTrace stackTrace) : this._(state, null, error, stackTrace);
 
   /// Current state of connection to the asynchronous computation.
   final ConnectionState connectionState;
@@ -241,11 +241,17 @@ class AsyncSnapshot<T> {
   /// If [data] is not null, this will be null.
   final Object error;
 
+  /// The latest error stack trace received by the asynchronous computation.
+  ///
+  /// If [hasError] returns true, then this will be the [StackTrace] of where
+  /// the error occured.
+  final StackTrace stackTrace;
+
   /// Returns a snapshot like this one, but in the specified [state].
   ///
   /// The [data] and [error] fields persist unmodified, even if the new state is
   /// [ConnectionState.none].
-  AsyncSnapshot<T> inState(ConnectionState state) => AsyncSnapshot<T>._(state, data, error);
+  AsyncSnapshot<T> inState(ConnectionState state) => AsyncSnapshot<T>._(state, data, error, stackTrace);
 
   /// Returns whether this snapshot contains a non-null [data] value.
   ///
@@ -273,11 +279,12 @@ class AsyncSnapshot<T> {
     final AsyncSnapshot<T> typedOther = other;
     return connectionState == typedOther.connectionState
         && data == typedOther.data
-        && error == typedOther.error;
+        && error == typedOther.error
+        && stackTrace == typedOther.stackTrace;
   }
 
   @override
-  int get hashCode => hashValues(connectionState, data, error);
+  int get hashCode => hashValues(connectionState, data, error, stackTrace);
 }
 
 /// Signature for strategies that build widgets based on asynchronous
@@ -411,8 +418,8 @@ class StreamBuilder<T> extends StreamBuilderBase<T, AsyncSnapshot<T>> {
   }
 
   @override
-  AsyncSnapshot<T> afterError(AsyncSnapshot<T> current, Object error) {
-    return AsyncSnapshot<T>.withError(ConnectionState.active, error);
+  AsyncSnapshot<T> afterError(AsyncSnapshot<T> current, Object error, StackTrace stackTrace) {
+    return AsyncSnapshot<T>.withError(ConnectionState.active, error, stackTrace);
   }
 
   @override
@@ -617,10 +624,10 @@ class _FutureBuilderState<T> extends State<FutureBuilder<T>> {
             _snapshot = AsyncSnapshot<T>.withData(ConnectionState.done, data);
           });
         }
-      }, onError: (Object error) {
+      }, onError: (Object error, StackTrace stackTrace) {
         if (_activeCallbackIdentity == callbackIdentity) {
           setState(() {
-            _snapshot = AsyncSnapshot<T>.withError(ConnectionState.done, error);
+            _snapshot = AsyncSnapshot<T>.withError(ConnectionState.done, error, stackTrace);
           });
         }
       });
