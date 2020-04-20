@@ -50,6 +50,7 @@ void main() {
       platform: platform,
       flutterRoot: '/flutter',
       webBuildDirectory: 'build/web',
+      enableIndexRewrite: false,
     );
     fileSystem.file('build/web/assets/foo.png')
       ..createSync(recursive: true)
@@ -69,6 +70,7 @@ void main() {
       platform: platform,
       flutterRoot: '/flutter',
       webBuildDirectory: 'build/web',
+      enableIndexRewrite: false,
     );
     fileSystem.file('build/web/assets/foo.js')
       ..createSync(recursive: true)
@@ -88,6 +90,7 @@ void main() {
       platform: platform,
       flutterRoot: '/flutter',
       webBuildDirectory: 'build/web',
+      enableIndexRewrite: false,
     );
     fileSystem.file('build/web/assets/foo.html')
       ..createSync(recursive: true)
@@ -107,6 +110,7 @@ void main() {
       platform: platform,
       flutterRoot: '/flutter',
       webBuildDirectory: 'build/web',
+      enableIndexRewrite: false,
     );
     fileSystem.file('flutter/bar.dart')
       ..createSync(recursive: true)
@@ -123,6 +127,7 @@ void main() {
       platform: platform,
       flutterRoot: '/flutter',
       webBuildDirectory: 'build/web',
+      enableIndexRewrite: false,
     );
     fileSystem.file('bar.dart')
       ..createSync(recursive: true)

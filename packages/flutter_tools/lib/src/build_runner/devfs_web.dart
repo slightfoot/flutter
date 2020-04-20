@@ -23,6 +23,7 @@ import '../base/net.dart';
 import '../base/platform.dart';
 import '../base/utils.dart';
 import '../build_info.dart';
+import '../build_system/targets/common.dart';
 import '../bundle.dart';
 import '../cache.dart';
 import '../compile.dart';
@@ -176,6 +177,13 @@ class WebAssetServer implements AssetReader {
         digests,
         buildInfo,
       );
+
+      // Parse dart defines to find use path strategy flag
+      final bool usePathStrategy = buildInfo.dartDefines.any((String el) =>
+          el.toLowerCase() == '$kUsePathStrategy=true'.toLowerCase());
+
+      server.enableIndexRewrite = usePathStrategy;
+
       if (testMode) {
         return server;
       }
@@ -188,6 +196,7 @@ class WebAssetServer implements AssetReader {
           platform: globals.platform,
           flutterRoot: Cache.flutterRoot,
           webBuildDirectory: getWebBuildDirectory(),
+          enableIndexRewrite: usePathStrategy,
         );
         shelf.serveRequests(httpServer, releaseAssetServer.handle);
         return server;
@@ -388,6 +397,12 @@ class WebAssetServer implements AssetReader {
       file = globals.fs.file(webPath);
     }
 
+    if (!file.existsSync() && enableIndexRewrite) {
+      file = globals.fs.currentDirectory
+          .childDirectory('web')
+          .childFile('index.html');
+    }
+
     if (!file.existsSync()) {
       return shelf.Response.notFound('');
     }
@@ -514,6 +529,9 @@ class WebAssetServer implements AssetReader {
 
     return modules;
   }
+
+  /// Whether to enable Index rewrite
+  bool enableIndexRewrite = false;
 
   /// Whether to use the cavaskit SDK for rendering.
   bool canvasKitRendering = false;
@@ -887,9 +905,11 @@ class ReleaseAssetServer {
     @required String webBuildDirectory,
     @required String flutterRoot,
     @required Platform platform,
+    bool enableIndexRewrite = false,
   }) : _fileSystem = fileSystem,
        _platform = platform,
        _flutterRoot = flutterRoot,
+       _enableIndexRewrite = enableIndexRewrite,
        _webBuildDirectory = webBuildDirectory,
        _fileSystemUtils = FileSystemUtils(fileSystem: fileSystem, platform: platform);
 
@@ -899,6 +919,7 @@ class ReleaseAssetServer {
   final FileSystem _fileSystem;
   final FileSystemUtils _fileSystemUtils;
   final Platform _platform;
+  final bool _enableIndexRewrite;
 
   // Locations where source files, assets, or source maps may be located.
   List<Uri> _searchPaths() => <Uri>[
@@ -935,7 +956,7 @@ class ReleaseAssetServer {
         'Content-Type': mimeType,
       });
     }
-    if (request.url.path == '') {
+    if (request.url.path == '' || _enableIndexRewrite) {
       final File file = _fileSystem.file(_fileSystem.path.join(_webBuildDirectory, 'index.html'));
       return shelf.Response.ok(file.readAsBytesSync(), headers: <String, String>{
         'Content-Type': 'text/html',
