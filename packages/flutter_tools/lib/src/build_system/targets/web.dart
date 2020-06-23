@@ -575,7 +575,8 @@ self.addEventListener('message', (event) => {
   if (event.data === 'skipWaiting') {
     return self.skipWaiting();
   }
-  if (event.message === 'downloadOffline') {
+
+  if (event.data === 'downloadOffline') {
     downloadOffline();
   }
 });
